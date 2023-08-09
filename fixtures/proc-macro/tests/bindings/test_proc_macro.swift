@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+
+import Foundation
 import proc_macro
 
 let one = makeOne(inner: 123)
