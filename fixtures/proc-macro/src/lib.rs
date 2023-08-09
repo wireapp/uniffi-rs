@@ -142,6 +142,11 @@ fn take_two(two: Two) -> String {
 }
 
 #[uniffi::export]
+fn take_record_with_bytes(rwb: RecordWithBytes) -> Vec<u8> {
+    rwb.some_bytes
+}
+
+#[uniffi::export]
 fn make_hashmap(k: i8, v: u64) -> HashMap<i8, u64> {
     HashMap::from([(k, v)])
 }
