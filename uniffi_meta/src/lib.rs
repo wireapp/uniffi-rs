@@ -5,8 +5,6 @@
 use std::{collections::BTreeMap, hash::Hasher};
 pub use uniffi_checksum_derive::Checksum;
 
-use serde::Serialize;
-
 mod ffi_names;
 pub use ffi_names::*;
 
@@ -118,22 +116,28 @@ impl Checksum for &str {
 // The namespace of a Component interface.
 //
 // This is used to match up the macro metadata with the UDL items.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NamespaceMetadata {
     pub crate_name: String,
     pub name: String,
 }
 
+impl NamespaceMetadata {
+    pub fn is_empty(&self) -> bool {
+        self.crate_name.is_empty() && self.name.is_empty()
+    }
+}
+
 // UDL file included with `include_scaffolding!()`
 //
 // This is to find the UDL files in library mode generation
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct UdlFile {
     pub module_path: String,
     pub name: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FnMetadata {
     pub module_path: String,
     pub name: String,
@@ -154,7 +158,7 @@ impl FnMetadata {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ConstructorMetadata {
     pub module_path: String,
     pub self_name: String,
@@ -178,7 +182,7 @@ impl ConstructorMetadata {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MethodMetadata {
     pub module_path: String,
     pub self_name: String,
@@ -201,7 +205,7 @@ impl MethodMetadata {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct TraitMethodMetadata {
     pub module_path: String,
     pub trait_name: String,
@@ -227,10 +231,9 @@ impl TraitMethodMetadata {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FnParamMetadata {
     pub name: String,
-    #[serde(rename = "type")]
     pub ty: Type,
     pub by_ref: bool,
     pub optional: bool,
@@ -249,7 +252,7 @@ impl FnParamMetadata {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Checksum)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Checksum)]
 pub enum LiteralMetadata {
     Boolean(bool),
     String(String),
@@ -271,42 +274,41 @@ pub enum LiteralMetadata {
 
 // Represent the radix of integer literal values.
 // We preserve the radix into the generated bindings for readability reasons.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Checksum)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Checksum)]
 pub enum Radix {
     Decimal = 10,
     Octal = 8,
     Hexadecimal = 16,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct RecordMetadata {
     pub module_path: String,
     pub name: String,
     pub fields: Vec<FieldMetadata>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FieldMetadata {
     pub name: String,
-    #[serde(rename = "type")]
     pub ty: Type,
     pub default: Option<LiteralMetadata>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct EnumMetadata {
     pub module_path: String,
     pub name: String,
     pub variants: Vec<VariantMetadata>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct VariantMetadata {
     pub name: String,
     pub fields: Vec<FieldMetadata>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ObjectMetadata {
     pub module_path: String,
     pub name: String,
@@ -314,7 +316,7 @@ pub struct ObjectMetadata {
     pub uniffi_traits: Vec<UniffiTraitMetadata>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct CallbackInterfaceMetadata {
     pub module_path: String,
     pub name: String,
@@ -330,7 +332,7 @@ impl ObjectMetadata {
 }
 
 /// The list of traits we support generating helper methods for.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum UniffiTraitMetadata {
     Debug {
         fmt: MethodMetadata,
@@ -347,7 +349,7 @@ pub enum UniffiTraitMetadata {
     },
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum ErrorMetadata {
     Enum { enum_: EnumMetadata, is_flat: bool },
 }
@@ -366,7 +368,7 @@ impl ErrorMetadata {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct CustomTypeMetadata {
     pub module_path: String,
     pub name: String,
@@ -384,7 +386,7 @@ pub fn checksum<T: Checksum>(val: &T) -> u16 {
 }
 
 /// Enum covering all the possible metadata types
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Metadata {
     Namespace(NamespaceMetadata),
     UdlFile(UdlFile),
