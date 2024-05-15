@@ -24,3 +24,18 @@ assert(String(describing: e) == "the error")
 assert(String(reflecting: e) == "ErrorInterface { e: the error }")
 assert(Error.self is Swift.Error.Type)
 assert(Error.self != Swift.Error.self)
+
+do {
+    try oopsEnum()
+    fatalError("Should have thrown")
+} catch {}
+
+do {
+    try flatVariantAEnum()
+    fatalError("Should have thrown")
+} catch let _ as Error {}
+
+do {
+    try flatVariantBEnum()
+    fatalError("Should have thrown")
+} catch let _ as Error {}

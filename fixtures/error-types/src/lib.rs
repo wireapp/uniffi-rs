@@ -149,16 +149,38 @@ fn return_proc_error(e: String) -> Arc<ProcErrorInterface> {
     Arc::new(ProcErrorInterface { e })
 }
 
+use ext_types_flat_procmacro_errors::{FlatErrorA, FlatErrorB};
+
 // Enums have good coverage elsewhere, but simple coverage here is good.
 #[derive(thiserror::Error, uniffi::Error, Debug)]
 pub enum Error {
     #[error("Oops")]
     Oops,
+    #[error(transparent)]
+    FlatVariantA {
+        #[from]
+        error: FlatErrorA,
+    },
+    #[error(transparent)]
+    FlatVariantB {
+        #[from]
+        error: FlatErrorB,
+    },
 }
 
 #[uniffi::export]
 fn oops_enum() -> Result<(), Error> {
     Err(Error::Oops)
+}
+
+#[uniffi::export]
+fn flat_variant_a_enum() -> Result<(), Error> {
+    Err(FlatErrorA::CaseA("Hello World!".into()).into())
+}
+
+#[uniffi::export]
+fn flat_variant_b_enum() -> Result<(), Error> {
+    Err(FlatErrorB::CaseB(std::io::Error::from_raw_os_error(22).into()).into())
 }
 
 uniffi::include_scaffolding!("error_types");

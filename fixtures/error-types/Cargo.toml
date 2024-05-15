@@ -10,13 +10,13 @@ crate-type = ["lib", "cdylib"]
 name = "uniffi_error_types"
 
 [dependencies]
-uniffi = {path = "../../uniffi"}
+uniffi = { path = "../../uniffi" }
 anyhow = "1"
 thiserror = "1.0"
+uniffi-fixture-ext-types-flat-procmacro-errors = { path = "../ext-types/flat-procmacro-errors" }
 
 [build-dependencies]
-uniffi = {path = "../../uniffi", features = ["build"] }
+uniffi = { path = "../../uniffi", features = ["build"] }
 
 [dev-dependencies]
-uniffi = {path = "../../uniffi", features = ["bindgen-tests"] }
-
+uniffi = { path = "../../uniffi", features = ["bindgen-tests"] }

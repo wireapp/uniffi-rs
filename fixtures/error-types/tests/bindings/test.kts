@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import uniffi.error_types.*;
 import kotlinx.coroutines.*
+import uniffi.error_types.*
 
 try {
     oops()
@@ -13,6 +13,21 @@ try {
     assert(e.chain().size == 2)
     assert(e.link(0U) == "because uniffi told me so")
 }
+
+try {
+    oopsEnum()
+    throw RuntimeException("Should have failed")
+} catch (e: Exception) {}
+
+try {
+    flatVariantAEnum()
+    throw RuntimeException("Should have failed")
+} catch (e: Exception) {}
+
+try {
+    flatVariantBEnum()
+    throw RuntimeException("Should have failed")
+} catch (e: Exception) {}
 
 try {
     oopsNowrap()
@@ -31,7 +46,9 @@ try {
 }
 
 val e = getError("the error")
+
 assert(e.toString() == "the error")
+
 assert(e.link(0U) == "the error")
 
 try {
