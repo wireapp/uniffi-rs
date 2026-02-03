@@ -11,6 +11,6 @@ readme = "../README.md"
 
 [dependencies]
 anyhow = "1"
-bytes = "1.3"
+bytes = "1.11"
 siphasher = "0.3"
 uniffi_checksum_derive = { version = "0.27.3", path = "../uniffi_checksum_derive" }
